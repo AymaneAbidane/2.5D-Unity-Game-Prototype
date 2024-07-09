@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ public class PlayerController : MonoBehaviour
 
     [Space]
 
+    [SerializeField, ChildGameObjectsOnly] private PlayerAnimations playerAnimations;
+    [SerializeField, ChildGameObjectsOnly] private SpriteRenderer playerSpriteRenderer;
 
     private PlayerInputs inputs;
     private Vector3 movmentVec;
@@ -31,7 +34,6 @@ public class PlayerController : MonoBehaviour
         ReadMovmentInputs();
     }
 
-
     private void FixedUpdate()
     {
         Move();
@@ -49,5 +51,24 @@ public class PlayerController : MonoBehaviour
         float z = inputs.PlayerInputsControlls.Move.ReadValue<Vector2>().y;
 
         movmentVec = new Vector3(x, 0f, z).normalized;
+        ControllMovmentAnimations(movmentVec);
+        ControllPlayerXDirectionFliping(movmentVec);
+    }
+
+    private void ControllPlayerXDirectionFliping(Vector3 moveVec)
+    {
+        if (moveVec.x < 0f)
+        {
+            playerSpriteRenderer.flipX = true;
+        }
+        else if (moveVec.x > 0f)
+        {
+            playerSpriteRenderer.flipX = false;
+        }
+    }
+
+    private void ControllMovmentAnimations(Vector3 moveVec)
+    {
+        playerAnimations.PlayWalkingAnimation(moveVec);
     }
 }
