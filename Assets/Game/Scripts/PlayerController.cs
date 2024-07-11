@@ -19,6 +19,11 @@ public class PlayerController : MonoBehaviour
     private PlayerInputs inputs;
     private Vector3 movmentVec;
 
+    public Vector3 GetMovmentVector()
+    {
+        return movmentVec;
+    }
+
     private void Awake()
     {
         inputs = new();
@@ -38,6 +43,7 @@ public class PlayerController : MonoBehaviour
     {
         Move();
     }
+
 
     private void Move()
     {
