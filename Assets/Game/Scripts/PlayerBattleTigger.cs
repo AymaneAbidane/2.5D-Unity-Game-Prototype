@@ -1,8 +1,10 @@
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 public class PlayerBattleTigger : MonoBehaviour
 {
@@ -11,12 +13,17 @@ public class PlayerBattleTigger : MonoBehaviour
     [SerializeField] private int stepsInGrass;
     [SerializeField] private float timePerStep;
     [SerializeField] private LayerMask grassLayer;
+    [SerializeField] private Vector2Int minAndMaxStepsToEncounter;
+
+    public event EventHandler onPlayerStepsreachTreshHoldForEncounter;
+
     private bool movingInGrass;
     private float stepTimer;
+    private int stepsToEncounter;
 
-    public bool GetMovingInGrass()
+    private void Awake()
     {
-        return movingInGrass;
+        CalculateStepsToNextEncounter();
     }
 
     public void SetMovingInGrass(bool value)
@@ -39,9 +46,21 @@ public class PlayerBattleTigger : MonoBehaviour
                 stepsInGrass++;
                 stepTimer = 0;
 
+                if (stepsInGrass >= stepsToEncounter)
+                {
+                    Debug.Log("Change to battle state");
+                    onPlayerStepsreachTreshHoldForEncounter?.Invoke(this, EventArgs.Empty);
+                }
                 //send an event to trigger the battle if the player reach the tresh hold of the steps before battle
             }
         }
 
     }
+
+    private void CalculateStepsToNextEncounter()
+    {
+        stepsToEncounter = Random.Range(minAndMaxStepsToEncounter.x, minAndMaxStepsToEncounter.y);
+        Debug.Log(stepsToEncounter);
+    }
+
 }
