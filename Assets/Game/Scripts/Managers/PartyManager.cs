@@ -4,34 +4,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PartyManager : MonoBehaviour
+public class PartyManager : UnitsManager
 {
     [Serializable]
-    public struct PartyMember
+    public class PartyMember : Unit
     {
-        public string memberName;
-        public int level;
-        public int currenthealth;
-        public int maxHealth;
-        public int strength;
-        public int initiative;
         public int currentExperience;
         public int maxExperience;
-        public GameObject memberBattleVisualPrefab;
         public GameObject memberOverworldlPrefab;
     }
 
-    [SerializeField, AssetsOnly] private PartyMemeberDataSO[] allMembers;
-    [Space]
-    [SerializeField] private List<PartyMember> currentParty;
-
+    [SerializeField] private List<PartyMember> currentPartyMember = new();
 
     [Button]//remove button property later
-    public void AddMemberToPartyByName(string newMemberName)
+    private void AddMemberToPartyByName(string newMemberName)
     {
-        foreach (var member in allMembers)
+        AddPartyMember(newMemberName);
+    }
+
+    protected override void AddPartyMember(string unitName)
+    {
+        foreach (var member in allPartyMembers)
         {
-            if (member.name == newMemberName)
+            if (member.ownName == unitName)
             {
                 AddToParty(member);
                 break;
@@ -44,13 +39,13 @@ public class PartyManager : MonoBehaviour
         PartyMember newPartyMember = new();
         newPartyMember.memberName = member.ownName;
         newPartyMember.level = member.startingLevel;
-        newPartyMember.currenthealth = member.baseHealth;
-        newPartyMember.maxExperience = newPartyMember.currenthealth;
+        newPartyMember.currentHealth = member.baseHealth;
+        newPartyMember.maxExperience = newPartyMember.currentHealth;
         newPartyMember.strength = member.baseStrengh;
         newPartyMember.initiative = member.baseInitiative;
-        newPartyMember.memberBattleVisualPrefab = member.visualPrefabs;
+        newPartyMember.unitBattleVisualPrefab = member.visualPrefabs;
         newPartyMember.memberOverworldlPrefab = member.memberOverworldVisualPrefab;
 
-        currentParty.Add(newPartyMember);
+        currentPartyMember.Add(newPartyMember);
     }
 }
