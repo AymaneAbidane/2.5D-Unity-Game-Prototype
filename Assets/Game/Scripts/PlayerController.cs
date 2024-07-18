@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
+        //make movment by velocity by changing magnitude
         //playerRb.velocity = mvSpeed * Time.fixedDeltaTime * movmentVec;
         playerRb.MovePosition(transform.position + (mvSpeed * Time.fixedDeltaTime * movmentVec));//this methode will make the movment faster than using dot velocity and the step will be pre calculated
     }
