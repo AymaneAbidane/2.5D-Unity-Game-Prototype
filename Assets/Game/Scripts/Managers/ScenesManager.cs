@@ -8,7 +8,7 @@ public class ScenesManager : MonoBehaviour
     public static ScenesManager Instance { get; private set; }
 
     private const string BATTLE_SCENE_NAME = "battleScene";
-    private const string OPEN_WORLD_SCENE = "OpenWorldScene";
+    private const string OPEN_WORLD_SCENE_NAME = "OpenWorldScene";
 
     private void Awake()
     {
@@ -30,6 +30,6 @@ public class ScenesManager : MonoBehaviour
 
     public void LoadOpenWorldScene()
     {
-        SceneManager.LoadScene(OPEN_WORLD_SCENE);
+        SceneManager.LoadScene(OPEN_WORLD_SCENE_NAME);
     }
 }

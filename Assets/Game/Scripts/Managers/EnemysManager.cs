@@ -20,6 +20,11 @@ public class EnemysManager : UnitsManager
         GenerateEnemyByName(name, level);
     }
 
+    public List<Enemy> GetCurrentEnemysList()
+    {
+        return currentEnemys;
+    }
+
     protected override void GenerateEnemyByName(string enemyName, int level)
     {
         foreach (var enemy in allEnemys)

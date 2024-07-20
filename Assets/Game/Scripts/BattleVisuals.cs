@@ -22,7 +22,7 @@ public class BattleVisuals : MonoBehaviour
     private const string ANIMATOR_DEATH_PARAM = "IsDead";
 
     [Button]// remove button property later
-    private void SetStartingValues(int currHealth, int maxHealth, int level)
+    public void SetStartingValues(int currHealth, int maxHealth, int level)
     {
         this.currHealth = currHealth;
         this.maxHealth = maxHealth;

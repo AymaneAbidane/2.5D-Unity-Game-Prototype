@@ -34,6 +34,11 @@ public class PartyManager : UnitsManager
         }
     }
 
+    public List<PartyMember> GetCurrentPartyMembersList()
+    {
+        return currentPartyMember;
+    }
+
     private void AddToParty(PartyMemeberDataSO member)
     {
         PartyMember newPartyMember = new();

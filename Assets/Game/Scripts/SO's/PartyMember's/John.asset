@@ -16,6 +16,6 @@ MonoBehaviour:
   baseHealth: 10
   baseStrengh: 5
   baseInitiative: 5
-  visualPrefabs: {fileID: 0}
+  visualPrefabs: {fileID: 671659970688001580, guid: fad4d97bb33cb92498cba8cb6d807b2c, type: 3}
   startingLevel: 1
   memberOverworldVisualPrefab: {fileID: 0}
