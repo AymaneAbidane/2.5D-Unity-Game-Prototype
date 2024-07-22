@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using TMPro;
 using UnityEngine;
 
 public class BattleSystem : MonoBehaviour
@@ -32,10 +33,11 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    private const string ACTION_MESSAGE = "'s Action:";
+
     [Header("Spawn Points")]
     [SerializeField] private Transform[] partySpawnPointsTransforms;
     [SerializeField] private Transform[] enemySpawnPointsTransforms;
-
 
     [Header("Managers")]
     [SerializeField] private PartyManager partyManager;
@@ -46,10 +48,19 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] private List<BattleEnteties> enemyBattlers = new();
     [SerializeField] private List<BattleEnteties> playerBattlers = new();
 
+    [Header("Ui")]
+    [SerializeField] private GameObject[] enemySelectionButtonsArray;
+    [SerializeField] private GameObject battleMenu;
+    [SerializeField] private GameObject enemySelectionMenu;
+    [SerializeField] private TextMeshProUGUI actionText;
+
+
+    private int currentBattler;
     void Start()
     {
         CreatePartyEnteties();
         CreateEnemyEnteties();
+        ShowBattleMenu();
     }
 
     private void CreatePartyEnteties()
@@ -98,4 +109,39 @@ public class BattleSystem : MonoBehaviour
             battlersList.Add(tempEntety);
         }
     }
+
+    private void ShowBattleMenu()
+    {
+        actionText.text = playerBattlers[currentBattler].name + ACTION_MESSAGE;
+        SetUiActivation(battleMenu, true);
+    }
+
+    public void BTN_ShowEnemySelectionMenu()
+    {
+        SetUiActivation(battleMenu, false);
+        SetEnemySelectionButton();
+        SetUiActivation(enemySelectionMenu, true);
+    }
+
+    private void SetEnemySelectionButton()
+    {
+        foreach (var button in enemySelectionButtonsArray)
+        {
+            SetUiActivation(button, false);
+        }
+
+        for (int i = 0; i < enemyBattlers.Count; i++)
+        {
+            GameObject enemyButton = enemySelectionButtonsArray[i];
+            SetUiActivation(enemyButton, true);
+            enemyButton.GetComponentInChildren<TextMeshProUGUI>().text = enemyBattlers[i].name;
+        }
+    }
+
+    private void SetUiActivation(GameObject ui, bool isActive)
+    {
+        ui.SetActive(isActive);
+    }
+
+
 }
