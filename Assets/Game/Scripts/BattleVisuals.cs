@@ -32,7 +32,7 @@ public class BattleVisuals : MonoBehaviour
         UpdateHealthBar();
     }
 
-    private void ChangeHealh(int currhealth)
+    public void ChangeHealh(int currhealth)
     {
         this.currHealth = currhealth;
         //if health minus or equal to 0 ==> destroy battle visual
@@ -52,19 +52,19 @@ public class BattleVisuals : MonoBehaviour
     }
 
     [Button]
-    private void PlayAttackAnimation()
+    public void PlayAttackAnimation()
     {
         animator.SetTrigger(AMIMATOR_ATK_PARAM);
     }
 
     [Button]
-    private void PlayGettingHitAnimation()
+    public void PlayGettingHitAnimation()
     {
         animator.SetTrigger(ANIMATOR_GETTING_HIT_PARAM);
     }
 
     [Button]
-    private void PlayDeathAnimation()
+    public void PlayDeathAnimation()
     {
         animator.SetTrigger(ANIMATOR_DEATH_PARAM);
     }

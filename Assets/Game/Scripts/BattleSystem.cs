@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BattleSystem : MonoBehaviour
@@ -40,6 +41,11 @@ public class BattleSystem : MonoBehaviour
         {
             this.target = target;
         }
+
+        public void UpdateUi()
+        {
+            battleVisuals.ChangeHealh(currentHealth);
+        }
     }
 
     private const string ACTION_MESSAGE = "'s Action:";
@@ -62,7 +68,7 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] private GameObject battleMenu;
     [SerializeField] private GameObject enemySelectionMenu;
     [SerializeField] private TextMeshProUGUI actionText;
-
+    [SerializeField] private TextMeshProUGUI battleTextPopUp;
 
     private int currentBattler;
     void Start()
@@ -70,6 +76,7 @@ public class BattleSystem : MonoBehaviour
         CreatePartyEnteties();
         CreateEnemyEnteties();
         ShowBattleMenu();
+        AttackAction(allBattlers[0], allBattlers[1]);
     }
 
     private void CreatePartyEnteties()
@@ -171,6 +178,17 @@ public class BattleSystem : MonoBehaviour
             SetUiActivation(enemySelectionMenu, false);
             ShowBattleMenu();
         }
+    }
+
+    private void AttackAction(BattleEnteties currentAttacker, BattleEnteties currentTarget)
+    {
+        int damage = currentAttacker.strengh;  //get damage value
+        currentAttacker.battleVisuals.PlayAttackAnimation(); //play attack animation
+        currentTarget.currentHealth -= damage; //dealing damage
+        currentTarget.battleVisuals.PlayGettingHitAnimation(); //play target hit animation
+        currentTarget.UpdateUi(); //update the ui
+        battleTextPopUp.text = string.Format("{0} Attacks {1} for {2} Damage", currentAttacker.name, currentTarget.name, damage);
+
     }
 
     private void SetUiActivation(GameObject ui, bool isActive)
