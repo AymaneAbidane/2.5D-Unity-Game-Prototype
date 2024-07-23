@@ -11,6 +11,9 @@ public class BattleSystem : MonoBehaviour
     [Serializable]
     public class BattleEnteties
     {
+        public enum ActionState { Attack, Run }
+        public ActionState battleState;
+
         public string name;
         public int currentHealth;
         public int maxHealth;
@@ -20,6 +23,7 @@ public class BattleSystem : MonoBehaviour
         public bool isPlayer;
 
         public BattleVisuals battleVisuals;
+        public int target;
 
         public void SetEntetiesValues(string name, int currenthealth, int maxhealth, int initiative, int strengh, int level, bool isPlayer)
         {
@@ -30,6 +34,11 @@ public class BattleSystem : MonoBehaviour
             this.strengh = strengh;
             this.level = level;
             this.isPlayer = isPlayer;
+        }
+
+        public void SetTarget(int target)
+        {
+            this.target = target;
         }
     }
 
@@ -135,6 +144,32 @@ public class BattleSystem : MonoBehaviour
             GameObject enemyButton = enemySelectionButtonsArray[i];
             SetUiActivation(enemyButton, true);
             enemyButton.GetComponentInChildren<TextMeshProUGUI>().text = enemyBattlers[i].name;
+        }
+    }
+
+
+    public void BTN_SelectEnemy(int currentEnemy)
+    {
+        //setting the current members target
+        BattleEnteties currentPlayerEntetie = playerBattlers[currentBattler];
+        currentPlayerEntetie.SetTarget(allBattlers.IndexOf(enemyBattlers[currentEnemy]));
+
+        //tell battle system this member is going to atk
+        currentPlayerEntetie.battleState = BattleEnteties.ActionState.Attack;
+        //incerement through our party members
+        currentBattler++;
+
+        if (currentBattler >= playerBattlers.Count)//if all players have selected an action
+        {
+            //start the battle
+            Debug.Log("Start The Battle");
+            Debug.Log("We Are Attacking : " + allBattlers[currentPlayerEntetie.target].name);
+        }
+        else
+        {
+            //show the battle menu for the next player
+            SetUiActivation(enemySelectionMenu, false);
+            ShowBattleMenu();
         }
     }
 

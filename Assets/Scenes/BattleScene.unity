@@ -489,7 +489,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 200136164}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 182889902}
+        m_TargetAssemblyTypeName: BattleSystem, Assembly-CSharp
+        m_MethodName: BTN_SelectEnemy
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &200136164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1688,7 +1700,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1202390305}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 182889902}
+        m_TargetAssemblyTypeName: BattleSystem, Assembly-CSharp
+        m_MethodName: BTN_SelectEnemy
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1202390305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1965,7 +1989,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1332395444}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 182889902}
+        m_TargetAssemblyTypeName: BattleSystem, Assembly-CSharp
+        m_MethodName: BTN_SelectEnemy
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1332395444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2927,6 +2963,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 39c90396739c1bb44ad3cb4c004a9110, type: 2}
   currentEnemys:
   - memberName: Slim
+    level: 5
+    currentHealth: 35
+    maxHealth: 35
+    strength: 4
+    initiative: 4
+    unitBattleVisualPrefab: {fileID: 6757111889905808293, guid: 4de85ca010c2799418e56014e262f612, type: 3}
+  - memberName: Slim2
     level: 5
     currentHealth: 35
     maxHealth: 35
