@@ -350,6 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bf4123debb0f474bbe100d73fc21ca6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
   partySpawnPointsTransforms:
   - {fileID: 635816209}
   - {fileID: 2085292248}
@@ -371,6 +372,7 @@ MonoBehaviour:
   enemySelectionMenu: {fileID: 1926158992}
   actionText: {fileID: 1853444173}
   battleTextPopUp: {fileID: 1353667952}
+  battleTextPopParentObejctHolder: {fileID: 460211535}
 --- !u!4 &182889903
 Transform:
   m_ObjectHideFlags: 0
@@ -728,7 +730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &460211536
 RectTransform:
   m_ObjectHideFlags: 0

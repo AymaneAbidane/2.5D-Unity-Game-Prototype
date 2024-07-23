@@ -13,7 +13,7 @@ public class BattleSystem : MonoBehaviour
     public class BattleEnteties
     {
         public enum ActionState { Attack, Run }
-        public ActionState battleState;
+        public ActionState actionState;
 
         public string name;
         public int currentHealth;
@@ -48,7 +48,12 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    private const string ACTION_MESSAGE = "'s Action:";
+
+    [SerializeField]
+    private enum BattleState { Start, Selection, Battle, Won, Lost, Run }
+
+    [Header("Battle State")]
+    [SerializeField] private BattleState state;
 
     [Header("Spawn Points")]
     [SerializeField] private Transform[] partySpawnPointsTransforms;
@@ -69,15 +74,96 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] private GameObject enemySelectionMenu;
     [SerializeField] private TextMeshProUGUI actionText;
     [SerializeField] private TextMeshProUGUI battleTextPopUp;
+    [SerializeField] private GameObject battleTextPopParentObejctHolder;
 
     private int currentBattler;
+    private const string WIN_MESSAGE = " You Won The Battle";
+    private const string ACTION_MESSAGE = "'s Action:";
+    private const float TURN_DURATION = 1.3f;
+
     void Start()
     {
         CreatePartyEnteties();
         CreateEnemyEnteties();
         ShowBattleMenu();
-        AttackAction(allBattlers[0], allBattlers[1]);
     }
+
+
+    private IEnumerator COR_BattleRoutine()
+    {
+        SetUiActivation(enemySelectionMenu, false); //enemy slection menu disable
+        state = BattleState.Battle; //change our state to the battle state
+        SetUiActivation(battleTextPopParentObejctHolder, true); //enable our bottom text
+
+        //loop through all battlers
+        //==> do theire appropriate action 
+
+        for (int i = 0; i < allBattlers.Count; i++)
+        {
+            switch (allBattlers[i].actionState)
+            {
+                case BattleEnteties.ActionState.Attack:
+                    //do the attack
+                    yield return StartCoroutine(COR_AttackRoutine(i));
+                    break;
+                case BattleEnteties.ActionState.Run:
+                    //run
+                    break;
+                default:
+                    Debug.Log("Error incorrect battle action");
+                    break;
+            }
+        }
+
+        if (state == BattleState.Battle)
+        {
+            SetUiActivation(battleTextPopParentObejctHolder, false);
+            currentBattler = 0;
+            ShowBattleMenu();
+        }
+        yield return null;
+        // if we havent won or lost , repeat the loop by opening battle menu
+    }
+
+    private IEnumerator COR_AttackRoutine(int i)
+    {
+        //player turn
+        if (allBattlers[i].isPlayer == true)
+        {
+            BattleEnteties currentAttacker = allBattlers[i];
+            BattleEnteties currentTarger = allBattlers[currentAttacker.target];
+            AttackAction(currentAttacker, currentTarger); //attack selected enemy (attack action)
+            yield return new WaitForSeconds(TURN_DURATION);  //wait a few seconds
+
+            if (currentTarger.currentHealth <= 0)//kill the enemy
+            {
+                battleTextPopUp.text = string.Format("{0} defeated {1}", currentAttacker.name, currentTarger.name);
+                yield return new WaitForSeconds(TURN_DURATION);
+                enemyBattlers.Remove(currentTarger);
+                allBattlers.Remove(currentTarger);
+
+                if (enemyBattlers.Count <= 0)
+                {
+                    state = BattleState.Won;
+                    battleTextPopUp.text = WIN_MESSAGE;
+                    yield return new WaitForSeconds(TURN_DURATION);
+                    Debug.Log("Go back to overworld scene");
+                }
+            }
+
+            //if no enemies remain
+            //=> we won the battle
+        }
+
+        //enemies turn
+        //attack selected party member (attack action)
+        //wait few seconds
+        //kill the party member
+
+        //if no party members remain
+        //=> we lost the battle
+    }
+
 
     private void CreatePartyEnteties()
     {
@@ -162,7 +248,7 @@ public class BattleSystem : MonoBehaviour
         currentPlayerEntetie.SetTarget(allBattlers.IndexOf(enemyBattlers[currentEnemy]));
 
         //tell battle system this member is going to atk
-        currentPlayerEntetie.battleState = BattleEnteties.ActionState.Attack;
+        currentPlayerEntetie.actionState = BattleEnteties.ActionState.Attack;
         //incerement through our party members
         currentBattler++;
 
@@ -170,7 +256,7 @@ public class BattleSystem : MonoBehaviour
         {
             //start the battle
             Debug.Log("Start The Battle");
-            Debug.Log("We Are Attacking : " + allBattlers[currentPlayerEntetie.target].name);
+            StartCoroutine(COR_BattleRoutine());
         }
         else
         {
@@ -195,6 +281,4 @@ public class BattleSystem : MonoBehaviour
     {
         ui.SetActive(isActive);
     }
-
-
 }
