@@ -77,6 +77,7 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] private GameObject battleTextPopParentObejctHolder;
 
     private int currentBattler;
+    private string LOOS_MESSAGE = " You Loss The Battle";
     private const string WIN_MESSAGE = " You Won The Battle";
     private const string ACTION_MESSAGE = "'s Action:";
     private const float TURN_DURATION = 1.3f;
@@ -92,7 +93,7 @@ public class BattleSystem : MonoBehaviour
     private IEnumerator COR_BattleRoutine()
     {
         SetUiActivation(enemySelectionMenu, false); //enemy slection menu disable
-        state = BattleState.Battle; //change our state to the battle state
+        ChangeBattleState(BattleState.Battle); //change our state to the battle state
         SetUiActivation(battleTextPopParentObejctHolder, true); //enable our bottom text
 
         //loop through all battlers
@@ -100,18 +101,21 @@ public class BattleSystem : MonoBehaviour
 
         for (int i = 0; i < allBattlers.Count; i++)
         {
-            switch (allBattlers[i].actionState)
+            if (state == BattleState.Battle)
             {
-                case BattleEnteties.ActionState.Attack:
-                    //do the attack
-                    yield return StartCoroutine(COR_AttackRoutine(i));
-                    break;
-                case BattleEnteties.ActionState.Run:
-                    //run
-                    break;
-                default:
-                    Debug.Log("Error incorrect battle action");
-                    break;
+                switch (allBattlers[i].actionState)
+                {
+                    case BattleEnteties.ActionState.Attack:
+                        //do the attack
+                        yield return StartCoroutine(COR_AttackRoutine(i));
+                        break;
+                    case BattleEnteties.ActionState.Run:
+                        //run
+                        break;
+                    default:
+                        Debug.Log("Error incorrect battle action");
+                        break;
+                }
             }
         }
 
@@ -127,43 +131,118 @@ public class BattleSystem : MonoBehaviour
 
     private IEnumerator COR_AttackRoutine(int i)
     {
+        BattleEnteties currentAttacker = allBattlers[i];
         //player turn
-        if (allBattlers[i].isPlayer == true)
+        if (currentAttacker.isPlayer == true)
         {
-            BattleEnteties currentAttacker = allBattlers[i];
-            BattleEnteties currentTarger = allBattlers[currentAttacker.target];
-            AttackAction(currentAttacker, currentTarger); //attack selected enemy (attack action)
+            if (allBattlers[currentAttacker.target].isPlayer == true || currentAttacker.target >= allBattlers.Count)
+            {
+                currentAttacker.SetTarget(GetRandomUnitIndex(false));
+            }
+
+            BattleEnteties currentTarget = allBattlers[currentAttacker.target];
+            AttackAction(currentAttacker, currentTarget); //attack selected enemy (attack action)
             yield return new WaitForSeconds(TURN_DURATION);  //wait a few seconds
 
-            if (currentTarger.currentHealth <= 0)//kill the enemy
+            if (currentTarget.currentHealth <= 0)//kill the enemy
             {
-                battleTextPopUp.text = string.Format("{0} defeated {1}", currentAttacker.name, currentTarger.name);
+                battleTextPopUp.text = string.Format("{0} defeated {1}", currentAttacker.name, currentTarget.name);
                 yield return new WaitForSeconds(TURN_DURATION);
-                enemyBattlers.Remove(currentTarger);
-                allBattlers.Remove(currentTarger);
+                RemoveDeadUnits(currentTarget, enemyBattlers);
 
-                if (enemyBattlers.Count <= 0)
+                if (enemyBattlers.Count <= 0)//if no enemies remain
                 {
-                    state = BattleState.Won;
-                    battleTextPopUp.text = WIN_MESSAGE;
+                    //=> we won the battle
+                    ChangeBattleState(BattleState.Won);
                     yield return new WaitForSeconds(TURN_DURATION);
                     Debug.Log("Go back to overworld scene");
                 }
             }
-
-            //if no enemies remain
-            //=> we won the battle
         }
 
-        //enemies turn
-        //attack selected party member (attack action)
-        //wait few seconds
-        //kill the party member
+        if (currentAttacker.isPlayer == false)//enemies turn
+        {
 
-        //if no party members remain
-        //=> we lost the battle
+            currentAttacker.SetTarget(GetRandomUnitIndex(true));
+            BattleEnteties currentTarget = allBattlers[currentAttacker.target];
+            AttackAction(currentAttacker, currentTarget); //attack selected party member (attack action)
+            yield return new WaitForSeconds(TURN_DURATION); //wait few seconds
+
+
+            if (currentTarget.currentHealth <= 0)
+            {
+                //kill the party member
+                battleTextPopUp.text = string.Format("{0} defeated {1}", currentAttacker.name, currentTarget.name);
+                yield return new WaitForSeconds(TURN_DURATION);
+                RemoveDeadUnits(currentTarget, playerBattlers);
+
+                if (playerBattlers.Count <= 0) //if no party members remain
+                {
+                    //=> we lost the battle
+                    ChangeBattleState(BattleState.Lost);
+                    yield return new WaitForSeconds(TURN_DURATION);
+                    Debug.Log("Game Over");
+                }
+
+            }
+        }
     }
 
+    private void ChangeBattleState(BattleState battleState)
+    {
+        state = battleState;
+        if (state == BattleState.Won)
+        {
+            battleTextPopUp.text = WIN_MESSAGE;
+            StopAllCoroutines();
+
+        }
+        else if (state == BattleState.Lost)
+        {
+            StopAllCoroutines();
+            battleTextPopUp.text = LOOS_MESSAGE;
+        }
+    }
+
+    private void RemoveDeadUnits(BattleEnteties currentTarger, List<BattleEnteties> battleUnits)
+    {
+        battleUnits.Remove(currentTarger);
+        allBattlers.Remove(currentTarger);
+    }
+
+    private int GetRandomUnitIndex(bool isAPartyMember)
+    {
+        List<int> playerBattlersIndexes = new();
+        List<int> enemysBattlersIndexes = new();
+
+        int indexValue;
+
+        for (int i = 0; i < allBattlers.Count; i++)
+        {
+            BattleEnteties battler = allBattlers[i];
+
+            if (battler.isPlayer == true)
+            {
+                playerBattlersIndexes.Add(i);
+            }
+            else
+            {
+                enemysBattlersIndexes.Add(i);
+            }
+
+        }
+
+        if (isAPartyMember == true)
+        {
+            indexValue = playerBattlersIndexes[UnityEngine.Random.Range(0, playerBattlersIndexes.Count)];
+        }
+        else
+        {
+            indexValue = enemysBattlersIndexes[UnityEngine.Random.Range(0, enemysBattlersIndexes.Count)];
+        }
+
+        return indexValue;
+    }
 
     private void CreatePartyEnteties()
     {
