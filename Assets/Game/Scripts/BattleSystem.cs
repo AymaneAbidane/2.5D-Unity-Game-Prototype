@@ -162,6 +162,7 @@ public class BattleSystem : MonoBehaviour
                     //=> we won the battle
                     ChangeBattleState(BattleState.Won);
                     yield return new WaitForSeconds(TURN_DURATION);
+                    ScenesManager.Instance.LoadOpenWorldScene();
                     Debug.Log("Go back to overworld scene");
                 }
             }
@@ -201,12 +202,9 @@ public class BattleSystem : MonoBehaviour
         if (state == BattleState.Won)
         {
             battleTextPopUp.text = WIN_MESSAGE;
-            StopAllCoroutines();
-
         }
         else if (state == BattleState.Lost)
         {
-            StopAllCoroutines();
             battleTextPopUp.text = LOOS_MESSAGE;
         }
     }
@@ -289,7 +287,16 @@ public class BattleSystem : MonoBehaviour
 
             //the visual exist on array on partymanager and enemysmanager
             BattleVisuals tempBattleVisual = Instantiate(member.unitBattleVisualPrefab, spawnPosition, Quaternion.identity).GetComponent<BattleVisuals>();
-            tempBattleVisual.SetStartingValues(member.maxHealth, member.maxHealth, member.level);
+            int healthPoints;
+            if (isPlayer == true)
+            {
+                healthPoints = member.currentHealth;
+            }
+            else
+            {
+                healthPoints = member.maxHealth;
+            }
+            tempBattleVisual.SetStartingValues(healthPoints, member.maxHealth, member.level);
             tempEntety.battleVisuals = tempBattleVisual;
 
 
@@ -361,10 +368,19 @@ public class BattleSystem : MonoBehaviour
         currentTarget.UpdateUi(); //update the ui
         battleTextPopUp.text = string.Format("{0} Attacks {1} for {2} Damage", currentAttacker.name, currentTarget.name, damage);
 
+        SaveHealth();
     }
 
     private void SetUiActivation(GameObject ui, bool isActive)
     {
         ui.SetActive(isActive);
+    }
+
+    private void SaveHealth()
+    {
+        for (int i = 0; i < playerBattlers.Count; i++)
+        {
+            partyManager.Savehealth(i, playerBattlers[i].currentHealth);
+        }
     }
 }

@@ -15,6 +15,25 @@ public class PartyManager : UnitsManager
     }
 
     [SerializeField] private List<PartyMember> currentPartyMember = new();
+    private Vector3 playerPosition;
+    private static GameObject Instance;
+
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this.gameObject;
+
+        }
+
+        DontDestroyOnLoad(gameObject);
+
+    }
 
     [Button]//remove button property later
     private void AddMemberToPartyByName(string newMemberName)
@@ -37,6 +56,21 @@ public class PartyManager : UnitsManager
     public List<PartyMember> GetCurrentPartyMembersList()
     {
         return currentPartyMember;
+    }
+
+    public void Savehealth(int partyMemberIndex, int health)
+    {
+        currentPartyMember[partyMemberIndex].currentHealth = health;
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        playerPosition = position;
+    }
+
+    public Vector3 GetPosition()
+    {
+        return playerPosition;
     }
 
     private void AddToParty(PartyMemeberDataSO member)
