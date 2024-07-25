@@ -86,10 +86,11 @@ public class BattleSystem : MonoBehaviour
 
 
 
-    void Start()
+    IEnumerator Start()
     {
         enemyManager = GameObject.FindFirstObjectByType<EnemysManager>();
         partyManager = GameObject.FindFirstObjectByType<PartyManager>();
+        yield return new WaitForSeconds(0.2f);
         CreatePartyEnteties();
         CreateEnemyEnteties();
         ShowBattleMenu();

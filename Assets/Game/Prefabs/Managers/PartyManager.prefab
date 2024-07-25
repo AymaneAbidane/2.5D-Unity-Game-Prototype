@@ -52,7 +52,7 @@ MonoBehaviour:
   - memberName: John
     level: 1
     currentHealth: 10
-    maxHealth: 0
+    maxHealth: 10
     strength: 5
     initiative: 5
     unitBattleVisualPrefab: {fileID: 671659970688001580, guid: fad4d97bb33cb92498cba8cb6d807b2c, type: 3}

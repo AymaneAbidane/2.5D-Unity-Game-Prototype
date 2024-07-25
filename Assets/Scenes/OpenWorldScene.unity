@@ -1545,7 +1545,7 @@ MonoBehaviour:
   grassLayer:
     serializedVersion: 2
     m_Bits: 8
-  minAndMaxStepsToEncounter: {x: 12, y: 33}
+  minAndMaxStepsToEncounter: {x: 2, y: 5}
 --- !u!1 &1934741047
 GameObject:
   m_ObjectHideFlags: 0

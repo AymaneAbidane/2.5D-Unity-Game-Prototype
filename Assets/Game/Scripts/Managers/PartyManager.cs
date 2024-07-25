@@ -45,6 +45,7 @@ public class PartyManager : UnitsManager
         newPartyMember.memberName = member.ownName;
         newPartyMember.level = member.startingLevel;
         newPartyMember.currentHealth = member.baseHealth;
+        newPartyMember.maxHealth = member.baseHealth;
         newPartyMember.maxExperience = newPartyMember.currentHealth;
         newPartyMember.strength = member.baseStrengh;
         newPartyMember.initiative = member.baseInitiative;
