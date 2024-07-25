@@ -55,13 +55,14 @@ public class BattleSystem : MonoBehaviour
     [Header("Battle State")]
     [SerializeField] private BattleState state;
 
+    [Header("Managers")]
+    [SerializeField] private PartyManager partyManager;
+    [SerializeField] private EnemysManager enemyManager;
+
     [Header("Spawn Points")]
     [SerializeField] private Transform[] partySpawnPointsTransforms;
     [SerializeField] private Transform[] enemySpawnPointsTransforms;
 
-    [Header("Managers")]
-    [SerializeField] private PartyManager partyManager;
-    [SerializeField] private EnemysManager enemyManager;
 
     [Header("Battlers")]
     [SerializeField] private List<BattleEnteties> allBattlers = new();
@@ -76,14 +77,19 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI battleTextPopUp;
     [SerializeField] private GameObject battleTextPopParentObejctHolder;
 
+
     private int currentBattler;
     private string LOOS_MESSAGE = " You Loss The Battle";
     private const string WIN_MESSAGE = " You Won The Battle";
     private const string ACTION_MESSAGE = "'s Action:";
     private const float TURN_DURATION = 1.3f;
 
+
+
     void Start()
     {
+        enemyManager = GameObject.FindFirstObjectByType<EnemysManager>();
+        partyManager = GameObject.FindFirstObjectByType<PartyManager>();
         CreatePartyEnteties();
         CreateEnemyEnteties();
         ShowBattleMenu();

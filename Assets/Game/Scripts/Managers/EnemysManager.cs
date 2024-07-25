@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class EnemysManager : UnitsManager
 {
@@ -13,11 +14,39 @@ public class EnemysManager : UnitsManager
 
     private const float LEVEL_MODIFIER = 0.5f;
 
+    private static GameObject Instance;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this.gameObject;
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
 
     [Button] // remove button property after
     private void GenerateEnemy(string name, int level)
     {
         GenerateEnemyByName(name, level);
+    }
+
+    public void GenerateEnemiesByEncounter(Encounter[] encounters, int maxNumenemies)
+    {
+        currentEnemys.Clear();
+        int numEnemies = UnityEngine.Random.Range(1, maxNumenemies + 1);
+
+        for (int i = 0; i < numEnemies; i++)
+        {
+            Encounter tempEncounter = encounters[UnityEngine.Random.Range(0, encounters.Length)];
+            int level = UnityEngine.Random.Range(tempEncounter.minLevel, tempEncounter.maxLevel + 1);
+            GenerateEnemyByName(tempEncounter.enemy.name, level);
+        }
     }
 
     public List<Enemy> GetCurrentEnemysList()
