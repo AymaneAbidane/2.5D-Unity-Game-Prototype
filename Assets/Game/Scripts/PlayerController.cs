@@ -27,6 +27,11 @@ public class PlayerController : MonoBehaviour
         inputs = new();
     }
 
+    private void Start()
+    {
+
+    }
+
     private void OnEnable()
     {
         inputs.Enable();

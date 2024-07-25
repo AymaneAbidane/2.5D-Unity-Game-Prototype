@@ -1002,7 +1002,7 @@ MonoBehaviour:
   - enemy: {fileID: 11400000, guid: 39c90396739c1bb44ad3cb4c004a9110, type: 2}
     minLevel: 1
     maxLevel: 2
-  maxnumberEnemies: 1
+  maxnumberEnemies: 3
 --- !u!1 &1381664030
 GameObject:
   m_ObjectHideFlags: 0

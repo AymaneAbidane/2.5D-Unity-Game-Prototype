@@ -15,5 +15,5 @@ MonoBehaviour:
   ownName: Slim
   baseHealth: 10
   baseStrengh: 1
-  baseInitiative: 1
+  baseInitiative: 10
   visualPrefabs: {fileID: 6757111889905808293, guid: 4de85ca010c2799418e56014e262f612, type: 3}

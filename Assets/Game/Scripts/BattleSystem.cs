@@ -86,14 +86,15 @@ public class BattleSystem : MonoBehaviour
 
 
 
-    IEnumerator Start()
+    private void Start()
     {
         enemyManager = GameObject.FindFirstObjectByType<EnemysManager>();
         partyManager = GameObject.FindFirstObjectByType<PartyManager>();
-        yield return new WaitForSeconds(0.2f);
+
         CreatePartyEnteties();
         CreateEnemyEnteties();
         ShowBattleMenu();
+        DetermineBattleOrder();
     }
 
 
@@ -168,7 +169,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
 
-        if (currentAttacker.isPlayer == false)//enemies turn
+        if (i < allBattlers.Count && currentAttacker.isPlayer == false)//enemies turn
         {
 
             currentAttacker.SetTarget(GetRandomUnitIndex(true));
@@ -382,5 +383,10 @@ public class BattleSystem : MonoBehaviour
         {
             partyManager.Savehealth(i, playerBattlers[i].currentHealth);
         }
+    }
+
+    private void DetermineBattleOrder()
+    {
+        allBattlers.Sort((bi1, bi2) => -bi1.initiative.CompareTo(bi2.initiative));
     }
 }

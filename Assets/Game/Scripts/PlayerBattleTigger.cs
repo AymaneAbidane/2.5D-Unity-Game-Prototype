@@ -20,10 +20,21 @@ public class PlayerBattleTigger : MonoBehaviour
     private bool movingInGrass;
     private float stepTimer;
     private int stepsToEncounter;
+    private PartyManager partyManager;
 
     private void Awake()
     {
         CalculateStepsToNextEncounter();
+    }
+
+    private void Start()
+    {
+        partyManager = GameObject.FindAnyObjectByType<PartyManager>();
+
+        if (partyManager.GetPosition() != Vector3.zero)
+        {
+            transform.position = partyManager.GetPosition();
+        }
     }
 
     public void SetMovingInGrass(bool value)
@@ -50,6 +61,7 @@ public class PlayerBattleTigger : MonoBehaviour
                 {
                     Debug.Log("Change to battle state");
                     onPlayerStepsreachTreshHoldForEncounter?.Invoke(this, EventArgs.Empty);
+                    partyManager.SetPosition(transform.position);
                 }
                 //send an event to trigger the battle if the player reach the tresh hold of the steps before battle
             }
