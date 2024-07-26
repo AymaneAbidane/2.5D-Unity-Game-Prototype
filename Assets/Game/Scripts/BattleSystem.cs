@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class BattleSystem : MonoBehaviour
 {
@@ -80,11 +81,12 @@ public class BattleSystem : MonoBehaviour
 
     private int currentBattler;
     private string LOOS_MESSAGE = " You Loss The Battle";
+    private const string SUCCESFULY_RUN_MESSAGE = " You Run Away";
+    private const int RUN_CHANCE = 50;
     private const string WIN_MESSAGE = " You Won The Battle";
     private const string ACTION_MESSAGE = "'s Action:";
     private const float TURN_DURATION = 1.3f;
-
-
+    private const string UNSUCCESUFUL_RUN_MESSAGE = " You Can't Run";
 
     private void Start()
     {
@@ -119,6 +121,7 @@ public class BattleSystem : MonoBehaviour
                         break;
                     case BattleEnteties.ActionState.Run:
                         //run
+                        yield return StartCoroutine(COR_RunRoutine());
                         break;
                     default:
                         Debug.Log("Error incorrect battle action");
@@ -207,6 +210,10 @@ public class BattleSystem : MonoBehaviour
         else if (state == BattleState.Lost)
         {
             battleTextPopUp.text = LOOS_MESSAGE;
+        }
+        else if (state == BattleState.Run)
+        {
+            battleTextPopUp.text = SUCCESFULY_RUN_MESSAGE;
         }
     }
 
@@ -388,5 +395,52 @@ public class BattleSystem : MonoBehaviour
     private void DetermineBattleOrder()
     {
         allBattlers.Sort((bi1, bi2) => -bi1.initiative.CompareTo(bi2.initiative));
+    }
+
+    public void BTN_RunAction()
+    {
+        state = BattleState.Selection;
+
+        BattleEnteties currentPlayerEntetiy = playerBattlers[currentBattler];
+        currentPlayerEntetiy.actionState = BattleEnteties.ActionState.Run;
+
+        SetUiActivation(battleMenu, false);
+
+        currentBattler++;
+
+        if (currentBattler >= playerBattlers.Count)
+        {
+            StartCoroutine(COR_BattleRoutine());
+        }
+        else
+        {
+            //show the battle menu for the next player
+            SetUiActivation(enemySelectionMenu, false);
+            ShowBattleMenu();
+        }
+    }
+
+    private IEnumerator COR_RunRoutine()
+    {
+        if (state == BattleState.Battle)
+        {
+            if (Random.Range(1, 101) >= RUN_CHANCE)
+            {
+                //we ve ran away
+                ChangeBattleState(BattleState.Run);
+                allBattlers.Clear();
+
+                yield return new WaitForSeconds(TURN_DURATION);
+
+                ScenesManager.Instance.LoadOpenWorldScene();
+                yield break;
+            }
+            else
+            {
+                //we cant run
+                battleTextPopUp.text = UNSUCCESUFUL_RUN_MESSAGE;
+                yield return new WaitForSeconds(TURN_DURATION);
+            }
+        }
     }
 }
