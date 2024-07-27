@@ -111,7 +111,7 @@ public class BattleSystem : MonoBehaviour
 
         for (int i = 0; i < allBattlers.Count; i++)
         {
-            if (state == BattleState.Battle)
+            if (state == BattleState.Battle && allBattlers[i].currentHealth > 0)
             {
                 switch (allBattlers[i].actionState)
                 {
@@ -130,6 +130,8 @@ public class BattleSystem : MonoBehaviour
             }
         }
 
+        RemoveDeadBattlers();
+
         if (state == BattleState.Battle)
         {
             SetUiActivation(battleTextPopParentObejctHolder, false);
@@ -146,7 +148,7 @@ public class BattleSystem : MonoBehaviour
         //player turn
         if (currentAttacker.isPlayer == true)
         {
-            if (allBattlers[currentAttacker.target].isPlayer == true || currentAttacker.target >= allBattlers.Count)
+            if (allBattlers[currentAttacker.target].currentHealth <= 0)
             {
                 currentAttacker.SetTarget(GetRandomUnitIndex(false));
             }
@@ -220,7 +222,6 @@ public class BattleSystem : MonoBehaviour
     private void RemoveDeadUnits(BattleEnteties currentTarger, List<BattleEnteties> battleUnits)
     {
         battleUnits.Remove(currentTarger);
-        allBattlers.Remove(currentTarger);
     }
 
     private int GetRandomUnitIndex(bool isAPartyMember)
@@ -255,6 +256,17 @@ public class BattleSystem : MonoBehaviour
         }
 
         return indexValue;
+    }
+
+    private void RemoveDeadBattlers()
+    {
+        for (int i = 0; i < allBattlers.Count; i++)
+        {
+            if (allBattlers[i].currentHealth <= 0)
+            {
+                allBattlers.RemoveAt(i);
+            }
+        }
     }
 
     private void CreatePartyEnteties()

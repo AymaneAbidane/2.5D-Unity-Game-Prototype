@@ -55,7 +55,15 @@ public class PartyManager : UnitsManager
 
     public List<PartyMember> GetCurrentPartyMembersList()
     {
-        return currentPartyMember;
+        List<PartyMember> alivePartyMembers = new();
+        foreach (var member in currentPartyMember)
+        {
+            if (member.currentHealth > 0)
+            {
+                alivePartyMembers.Add(member);
+            }
+        }
+        return alivePartyMembers;
     }
 
     public void Savehealth(int partyMemberIndex, int health)
